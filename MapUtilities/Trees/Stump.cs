@@ -13,12 +13,12 @@ namespace MapUtilities.Trees
 {
     public class Stump : TreePart
     {
-        public Stump(TreeRenderer renderer)
+        public Stump(TreeRenderer renderer, Microsoft.Xna.Framework.Rectangle sprite)
         {
             children = new List<TreePart>();
-            spriteSheet = TreeHandler.treeImage;
+            spriteSheet = renderer.species.treeSheet;
             this.renderer = renderer;
-            sprite = new Microsoft.Xna.Framework.Rectangle(0, 16, 16, 16);
+            this.sprite = sprite;
             rotation = 0f;
             depth = 0;
         }
@@ -27,7 +27,7 @@ namespace MapUtilities.Trees
         {
             Vector2 local = Game1.GlobalToLocal(Game1.viewport, new Vector2(treePos.X * 64, treePos.Y * 64));
 
-            b.Draw(spriteSheet, new Vector2(x + local.X, y + local.Y), sprite, renderer.transparency, rotation + currentRotation, new Vector2(sprite.Width / 2, sprite.Height), 4f, SpriteEffects.None, (treePos.Y * 64) / 10000 + ((treePos.X * 64) % 9 - depth * 10) / 10000 + depthOffset);
+            b.Draw(spriteSheet, new Vector2(x + local.X, y + local.Y), sprite, renderer.transparency, rotation + currentRotation, new Vector2(sprite.Width / 2, sprite.Height - 1), 4f, SpriteEffects.None, (treePos.Y * 64) / 10000 + ((treePos.X * 64) % 9 - depth * 10) / 10000 + depthOffset);
 
             float xOffset = 0f;
             float yOffset = 0f;

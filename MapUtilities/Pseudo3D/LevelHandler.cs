@@ -24,6 +24,19 @@ namespace MapUtilities.Pseudo3D
             return levels[c];
         }
 
+        public static string getLevelSuffixForCharacter(Character c)
+        {
+            if (!levels.ContainsKey(c))
+                levels[c] = "Base";
+            if(c.currentLocation != null && MapHandler.hasLevel(c.currentLocation, levels[c]))
+            {
+                if (levels[c].Equals("Base"))
+                    return "";
+                return "_" + levels[c];
+            }
+            return "";
+        }
+
         public static void setLevelForCharacter(Character c, string level)
         {
             levels[c] = level;

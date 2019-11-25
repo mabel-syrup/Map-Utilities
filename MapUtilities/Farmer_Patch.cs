@@ -18,7 +18,7 @@ namespace MapUtilities
         {
             try
             {
-                Layer slope = currentLocation.map.GetLayer("Slope");
+                Layer slope = currentLocation.map.GetLayer("Slope" + Pseudo3D.LevelHandler.getLevelSuffixForCharacter(__instance));
                 if (slope != null && slope.Tiles[__instance.getTileX(), __instance.getTileY()] != null)
                 {
                     SlopeHandler.modifyVelocity(__instance, slope.Tiles[__instance.getTileX(), __instance.getTileY()]);
@@ -29,17 +29,23 @@ namespace MapUtilities
 
             }
             string currentLevel = Pseudo3D.LevelHandler.getLevelForCharacter(__instance);
-            if(currentLocation.map.GetLayer("Back").Tiles[__instance.getTileX(), __instance.getTileY()] != null && currentLocation.map.GetLayer("Back").Tiles[__instance.getTileX(), __instance.getTileY()].Properties.ContainsKey("Layer"))
+            string backLayer = "Back" + Pseudo3D.LevelHandler.getLevelSuffixForCharacter(__instance);
+            if (currentLocation.map.GetLayer(backLayer).Tiles[__instance.getTileX(), __instance.getTileY()] != null)
             {
-                xTile.ObjectModel.PropertyValue layerSwitch = currentLocation.map.GetLayer("Back").Tiles[__instance.getTileX(), __instance.getTileY()].Properties["Layer"];
-                string layer = layerSwitch.ToString();
-                if (layer.Equals("0"))
-                    layer = "Base";
-                if (!currentLevel.Equals(layer))
+                xTile.Tiles.Tile currentTile = currentLocation.map.GetLayer(backLayer).Tiles[__instance.getTileX(), __instance.getTileY()];
+                if (currentTile.Properties.ContainsKey("Level"))
                 {
-                    Logger.log("Applying layer " + layer + "...");
-                    //Pseudo3D.MapHandler.setPassableTiles(currentLocation, layer);
-                    Pseudo3D.LevelHandler.setLevelForCharacter(__instance, layer);
+                    Logger.log("Checking level...");
+                    xTile.ObjectModel.PropertyValue layerSwitch = currentLocation.map.GetLayer(backLayer).Tiles[__instance.getTileX(), __instance.getTileY()].Properties["Level"];
+                    string layer = layerSwitch.ToString();
+                    if (layer.Equals("0"))
+                        layer = "Base";
+                    if (!currentLevel.Equals(layer))
+                    {
+                        Logger.log("Applying level " + layer + "...");
+                        //Pseudo3D.MapHandler.setPassableTiles(currentLocation, layer);
+                        Pseudo3D.LevelHandler.setLevelForCharacter(__instance, layer);
+                    }
                 }
             }
             //Logger.log("Colliding position? " + currentLocation.isCollidingPosition(__instance.nextPosition(__instance.facingDirection), viewport, true, 0, false, (Character)__instance).ToString());
@@ -51,11 +57,7 @@ namespace MapUtilities
     {
         public static void Postfix(GameTime time, GameLocation location, Farmer __instance)
         {
-            Layer velocity = location.map.GetLayer("Velocity");
-            if (velocity != null && velocity.Tiles[__instance.getTileX(), __instance.getTileY()] != null)
-            {
-                Velocity.VelocityHandler.updateVelocity(__instance, velocity.Tiles[__instance.getTileX(), __instance.getTileY()]);
-            }
+            Contact.TileContactHandler.sustainedContact(__instance, location, __instance.getTileX(), __instance.getTileY());
         }
     }
 }

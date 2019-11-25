@@ -15,6 +15,7 @@ namespace MapUtilities.Particles
         public Vector2 position;
         public float scale;
         public float rotation;
+        public int spriteIndex;
 
         public Particle(Vector2 position, float scale, float rotation, int lifetime, int lifeDuration)
         {
@@ -25,9 +26,9 @@ namespace MapUtilities.Particles
             this.rotation = rotation;
         }
 
-        public void draw(SpriteBatch b, Texture2D spriteSheet, Rectangle sprite, float depth, Vector2 local)
+        public void draw(SpriteBatch b, Texture2D spriteSheet, Rectangle sprite, float depth, Vector2 local, Color tint)
         {
-            b.Draw(spriteSheet, new Vector2(position.X + local.X, position.Y + local.Y), sprite, Color.White, rotation, Vector2.Zero, scale, SpriteEffects.None, depth);
+            b.Draw(spriteSheet, new Vector2(position.X + local.X, position.Y + local.Y), sprite, tint, rotation, new Vector2(sprite.Width / 2f, sprite.Height / 2f), scale, SpriteEffects.None, depth);
         }
     }
 }

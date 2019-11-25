@@ -75,26 +75,26 @@ namespace MapUtilities.Velocity
 
             foreach(int direction in directions)
             {
-                if(direction == Up && -farmer.yVelocity < maxVelocity)
-                {
-                    farmer.yVelocity = -maxVelocity;
-                }
-                else if (direction == Down && farmer.yVelocity < maxVelocity)
+                if(direction == Up)
                 {
                     farmer.yVelocity = maxVelocity;
                 }
-                else if (direction == Left && -farmer.xVelocity < maxVelocity)
+                else if (direction == Down)
+                {
+                    farmer.yVelocity = -maxVelocity;
+                }
+                else if (direction == Left)
                 {
                     farmer.xVelocity = -maxVelocity;
                 }
-                else if (direction == Right && farmer.xVelocity < maxVelocity)
+                else if (direction == Right)
                 {
                     farmer.xVelocity = maxVelocity;
                 }
             }
 
 
-            Layer slope = farmer.currentLocation.map.GetLayer("Slope");
+            Layer slope = farmer.currentLocation.map.GetLayer("Slope" + Pseudo3D.LevelHandler.getLevelSuffixForCharacter(farmer));
             if (slope != null && slope.Tiles[farmer.getTileX(), farmer.getTileY()] != null)
             {
                 Slope.SlopeHandler.modifyVelocity(farmer, slope.Tiles[farmer.getTileX(), farmer.getTileY()], farmer.xVelocity, farmer.yVelocity);

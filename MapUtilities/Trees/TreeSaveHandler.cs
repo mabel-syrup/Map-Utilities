@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MapUtilities.Pseudo3D
+namespace MapUtilities.Trees
 {
-    public class Overlay
+    public static class TreeSaveHandler
     {
 
     }

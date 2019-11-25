@@ -27,7 +27,7 @@ namespace MapUtilities.Trees
         {
             Vector2 local = Game1.GlobalToLocal(Game1.viewport, new Vector2(treePos.X * 64, treePos.Y * 64));
 
-            b.Draw(spriteSheet, new Vector2(x + local.X, y + local.Y), sprite, renderer.transparency, rotation + currentRotation, new Vector2(sprite.Width / 2, sprite.Height), 4f, left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, (treePos.Y * 64) / 10000 + ((treePos.X * 64) % 9 - depth * 10) / 10000 + depthOffset);
+            b.Draw(spriteSheet, new Vector2(x + local.X, y + local.Y), sprite, renderer.transparency, rotation + currentRotation, new Vector2(sprite.Width / 2, sprite.Height - 1), 4f, left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, (treePos.Y * 64) / 10000 + ((treePos.X * 64) % 9 - depth * 10) / 10000 + depthOffset);
 
             float xOffset = 0f;
             float yOffset = 0f;
@@ -92,6 +92,26 @@ namespace MapUtilities.Trees
             return this;
         }
 
+        public virtual List<TreePart> findAllEnds(Type[] acceptableParents = null)
+        {
+            List<TreePart> ends = new List<TreePart>();
+            foreach(TreePart child in children)
+            {
+                if (acceptableParents == null || acceptableParents.Contains(child.GetType()))
+                {
+                    foreach(TreePart end in child.findAllEnds(acceptableParents))
+                    {
+                        ends.Add(end);
+                    }
+                }
+            }
+            if(children.Count == 0)
+            {
+                ends.Add(this);
+            }
+            return ends;
+        }
+
         public virtual float findTotalRotationOfChild(TreePart part)
         {
             if (!this.isParentOf(part))
@@ -117,6 +137,50 @@ namespace MapUtilities.Trees
                 totalChildRotation += rotation;
             }
             return totalChildRotation;
+        }
+
+        
+
+        public virtual int getHeightOf(TreePart goal, Type[] ignoreTypes = null)
+        {
+            foreach(TreePart child in children)
+            {
+                int thisValue = 0;
+                if(ignoreTypes == null || !ignoreTypes.Contains(this.GetType()))
+                {
+                    //Logger.log("This part was " + this.GetType().ToString() + ", which was acceptable.");
+                    thisValue = 1;
+                }
+                if(child == goal)
+                {
+                    //Logger.log("Child was goal, result is now " + (1 + thisValue));
+                    return 1 + thisValue;
+                }
+                int childHeight = child.getHeightOf(goal, ignoreTypes);
+                if(childHeight >= 1)
+                {
+                    //Logger.log("Running total was greater than 0.  Total is now " + (childHeight + thisValue));
+                    return childHeight + thisValue;
+                }
+            }
+            return -1;
+        }
+
+        public virtual int getExtent(Type[] acceptableParents = null, int currentHeight = 0)
+        {
+            int greatest = currentHeight + 1;
+            foreach(TreePart child in children)
+            {
+                if(acceptableParents == null || !acceptableParents.Contains(child.GetType()))
+                {
+                    int childHeight = child.getExtent(acceptableParents, currentHeight + 1);
+                    if (childHeight > greatest)
+                    {
+                        greatest = childHeight;
+                    }
+                }
+            }
+            return greatest;
         }
 
         public virtual bool isParentOf(TreePart part)

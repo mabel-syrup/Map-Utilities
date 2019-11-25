@@ -35,6 +35,9 @@
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Lib.Harmony.1.2.0.1\lib\net45\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -46,23 +49,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API.cs" />
     <Compile Include="Background_Patch.cs" />
+    <Compile Include="Critters\CritterSpawnConfiguration.cs" />
+    <Compile Include="Critters\CritterSpawnData.cs" />
+    <Compile Include="Critters\CritterTileHandler.cs" />
+    <Compile Include="Contact\PainTileHandler.cs" />
+    <Compile Include="Contact\TileContactHandler.cs" />
+    <Compile Include="Contact\TileContactMorphHandler.cs" />
+    <Compile Include="Contact\TileMorph.cs" />
+    <Compile Include="Critters\PackagedCritters\Fireflies.cs" />
+    <Compile Include="Critters\PackagedCritters\HornedOwl.cs" />
+    <Compile Include="Critters\PackagedCritters\Firefly.cs" />
     <Compile Include="Farmer_Patch.cs" />
     <Compile Include="GameLocation_Patch.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ModEntry.cs" />
     <Compile Include="Parallax\BackgroundHandler.cs" />
+    <Compile Include="Parallax\ForegroundHandler.cs" />
     <Compile Include="Parallax\ParallaxBackground.cs" />
+    <Compile Include="Parallax\ParallaxForeground.cs" />
     <Compile Include="Parallax\ParallaxLayer.cs" />
     <Compile Include="Particles\Particle.cs" />
     <Compile Include="Particles\ParticleHandler.cs" />
     <Compile Include="Particles\ParticleSystem.cs" />
+    <Compile Include="Perspective\PerspectiveRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pseudo3D\GameLocation_Patch.cs" />
     <Compile Include="Pseudo3D\LevelHandler.cs" />
     <Compile Include="Pseudo3D\MapHandler.cs" />
-    <Compile Include="Pseudo3D\Overlay.cs" />
     <Compile Include="Randomizer\RandomHandler.cs" />
     <Compile Include="Reflector.cs" />
     <Compile Include="Slope\SlopeHandler.cs" />
@@ -70,12 +86,15 @@
     <Compile Include="Trees\Branch.cs" />
     <Compile Include="Trees\LeafCluster.cs" />
     <Compile Include="Trees\Limb.cs" />
+    <Compile Include="Trees\Species.cs" />
     <Compile Include="Trees\TreeHandler.cs" />
     <Compile Include="Trees\TreePart.cs" />
     <Compile Include="Trees\TreeRenderer.cs" />
     <Compile Include="Trees\Stump.cs" />
+    <Compile Include="Trees\TreeSaveHandler.cs" />
     <Compile Include="Trees\Tree_Patch.cs" />
     <Compile Include="Trees\Trunk.cs" />
+    <Compile Include="Util\StringUtilities.cs" />
     <Compile Include="Velocity\VelocityHandler.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +104,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Pathoschild.Stardew.ModBuildConfig.2.2.0\analyzers\dotnet\cs\StardewModdingAPI.ModBuildConfig.Analyzer.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Pathoschild.Stardew.ModBuildConfig.2.2.0\build\Pathoschild.Stardew.ModBuildConfig.targets" Condition="Exists('..\packages\Pathoschild.Stardew.ModBuildConfig.2.2.0\build\Pathoschild.Stardew.ModBuildConfig.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

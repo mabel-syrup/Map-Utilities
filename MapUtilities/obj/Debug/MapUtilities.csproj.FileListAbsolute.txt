@@ -4,3 +4,5 @@ e:\users\matthew\documents\visual studio 2017\Projects\MapUtilities\MapUtilities
 e:\users\matthew\documents\visual studio 2017\Projects\MapUtilities\MapUtilities\obj\Debug\MapUtilities.csprojResolveAssemblyReference.cache
 e:\users\matthew\documents\visual studio 2017\Projects\MapUtilities\MapUtilities\obj\Debug\MapUtilities.dll
 e:\users\matthew\documents\visual studio 2017\Projects\MapUtilities\MapUtilities\obj\Debug\MapUtilities.pdb
+e:\users\matthew\documents\visual studio 2017\Projects\MapUtilities\MapUtilities\bin\Debug\Newtonsoft.Json.dll
+e:\users\matthew\documents\visual studio 2017\Projects\MapUtilities\MapUtilities\bin\Debug\Newtonsoft.Json.xml

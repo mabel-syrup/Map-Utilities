@@ -8,12 +8,12 @@ namespace MapUtilities.Trees
 {
     public class Branch : TreePart
     {
-        public Branch(TreeRenderer renderer)
+        public Branch(TreeRenderer renderer, Microsoft.Xna.Framework.Rectangle sprite)
         {
             children = new List<TreePart>();
-            spriteSheet = TreeHandler.treeImage;
+            spriteSheet = renderer.species.treeSheet;
             this.renderer = renderer;
-            sprite = new Microsoft.Xna.Framework.Rectangle(22, 8, 3, 8);
+            this.sprite = sprite;
             rotation = 0f;
             depth = 0;
         }

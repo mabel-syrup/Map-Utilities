@@ -14,7 +14,8 @@ namespace MapUtilities.Parallax
         public const int Tile = 0;
         public const int Stretch = 1;
         public const int Fill = 2;
-        public const int None = 3;
+        public const int Fit = 3;
+        public const int None = 4;
 
         public Texture2D layerImage;
         public float depth;
@@ -23,19 +24,45 @@ namespace MapUtilities.Parallax
         public int fillMode;
         public float zoomScale;
 
-        public ParallaxLayer(Texture2D layerImage, float depth)
+        public bool onHorizon;
+
+        public float horizonOffset;
+
+        public List<Particles.ParticleSystem> particleSystems;
+        public Dictionary<Vector2, StardewValley.TerrainFeatures.TerrainFeature> features;
+        public Dictionary<Vector2, StardewValley.Object> objects;
+
+        public ParallaxLayer(Texture2D layerImage, float depth, bool useHorizon, int horizon)
         {
             this.layerImage = layerImage;
             this.depth = depth;
             this.fillMode = Tile;
             this.zoomScale = 2f;
+            this.onHorizon = useHorizon;
+            this.horizonOffset = horizon - (layerImage.Height * zoomScale);
+            this.particleSystems = new List<Particles.ParticleSystem>();
+            this.objects = new Dictionary<Vector2, StardewValley.Object>();
+            this.features = new Dictionary<Vector2, StardewValley.TerrainFeatures.TerrainFeature>();
+            Logger.log("Set horizon offset to " + horizonOffset + "; " + horizon + " - (" + layerImage.Height + " * " + zoomScale + ")");
         }
 
         public void update(xTile.Dimensions.Rectangle viewport)
         {
             Vector2 mapOrigin = Game1.GlobalToLocal(viewport, Vector2.Zero);
             position.X = mapOrigin.X * depth;
-            position.Y = mapOrigin.Y * depth;
+            position.Y = mapOrigin.Y * depth + (onHorizon ? horizonOffset : 0);
+            foreach(Particles.ParticleSystem system in particleSystems)
+            {
+                system.update(Game1.currentGameTime, Game1.currentLocation);
+            }
+            foreach(Vector2 location in objects.Keys)
+            {
+                objects[location].updateWhenCurrentLocation(Game1.currentGameTime, Game1.currentLocation);
+            }
+            foreach(Vector2 location in features.Keys)
+            {
+                features[location].tickUpdate(Game1.currentGameTime, new Vector2(location.X + position.X, location.Y + position.Y), Game1.currentLocation);
+            }
         }
 
         public void draw(SpriteBatch b)
@@ -97,9 +124,10 @@ namespace MapUtilities.Parallax
             //Fill causes the layer to scale uniformly until it covers the viewport's area.  Useful to make a panoramic shot whose aspect ratio is important, and cropping is not an issue.
             else if (fillMode == Fill)
             {
+                float scaleMult = Math.Max((Game1.viewport.Width / layerImage.Width), (Game1.viewport.Height / layerImage.Height));
                 b.Draw(
                     layerImage,
-                    new Rectangle((int)position.X, (int)position.Y, (int)(Game1.viewport.Width * zoom), (int)(Game1.viewport.Height * zoom)),
+                    new Rectangle((int)position.X, (int)position.Y, (int)(layerImage.Width * scaleMult), (int)(layerImage.Height * scaleMult)),
                     new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, layerImage.Width, layerImage.Height)),
                     Color.White,
                     0.0f,
@@ -107,6 +135,26 @@ namespace MapUtilities.Parallax
                     SpriteEffects.None,
                     1E-07f + (1E-07f * depth)
                 );
+            }
+            //Fit causes the layer to scale uniformly until it covers the viewport's area.  Useful to make a panoramic shot whose aspect ratio is important, and cropping is not an issue.
+            else if (fillMode == Fit)
+            {
+                float scaleMult = Math.Min((Game1.viewport.Width / (layerImage.Width)), (Game1.viewport.Height / (layerImage.Height)));
+                b.Draw(
+                    layerImage,
+                    new Rectangle((int)position.X, (int)position.Y, (int)(layerImage.Width * scaleMult), (int)(layerImage.Height * scaleMult)),
+                    new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, layerImage.Width, layerImage.Height)),
+                    Color.White,
+                    0.0f,
+                    Vector2.Zero,
+                    SpriteEffects.None,
+                    1E-07f + (1E-07f * depth)
+                );
+            }
+
+            foreach(Particles.ParticleSystem system in particleSystems)
+            {
+                system.drawAsChild(b, new Vector2(position.X, position.Y), (1E-06f + (1E-07f * depth) + 1E-08f));
             }
         }
     }

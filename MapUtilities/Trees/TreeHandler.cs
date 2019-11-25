@@ -15,12 +15,16 @@ namespace MapUtilities.Trees
     {
         public static Dictionary<Tree, TreeRenderer> currentTrees;
 
-        public static Texture2D treeImage;
+        public static Dictionary<int, Species> species;
+
+        //public static Texture2D treeImage;
 
         public static void init()
         {
             currentTrees = new Dictionary<Tree, TreeRenderer>();
-            treeImage = Loader.loader.Load<Texture2D>("Content/Trees/Test.png", ContentSource.ModFolder);
+            species = new Dictionary<int, Species>();
+            //treeImage = (Texture2D)Loader.load<Texture2D>("Content/Trees/Test.png");
+            //treeImage = Loader.loader.Load<Texture2D>("Content/Trees/Test.png", ContentSource.ModFolder);
         }
 
         public static void createAllTrees(GameLocation location)
@@ -41,6 +45,18 @@ namespace MapUtilities.Trees
                         currentTrees[tree] = new TreeRenderer(tree, position);
                 }
             }
+        }
+
+        public static Species getSpecies(int which)
+        {
+            if (!species.ContainsKey(which))
+                species[which] = new Species(which);
+            return species[which];
+        }
+
+        public static Texture2D getTreeSheetForTree(int treeType)
+        {
+            return null;
         }
     }
 }

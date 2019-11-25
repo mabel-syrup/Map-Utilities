@@ -17,15 +17,22 @@ namespace MapUtilities
 {
     public class ModEntry : Mod
     {
+        IModHelper helper;
 
         public override void Entry(IModHelper helper)
         {
+            this.helper = helper;
             Logger.monitor = Monitor;
             Loader.loader = helper.Content;
             Reflector.reflector = helper.Reflection;
             ParticleHandler.init();
-            Pseudo3D.LevelHandler.initialize();
+            LevelHandler.initialize();
             TreeHandler.init();
+            ForegroundHandler.init();
+            Perspective.PerspectiveRenderer.init();
+            Contact.PainTileHandler.init();
+            Contact.TileContactMorphHandler.init();
+            Critters.CritterSpawnData.init();
             HarmonyInstance harmony = HarmonyInstance.Create("mabelsyrup.farmhouse");
 
             harmony.Patch(
@@ -76,30 +83,48 @@ namespace MapUtilities
             helper.Events.GameLoop.TimeChanged += performTenMinuteUpdate;
             helper.Events.Player.Warped += performLocationSetup;
             helper.Events.GameLoop.UpdateTicked += performTickUpdate;
+            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+            helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+        }
+
+        private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+        {
+            Critters.CritterSpawnData.getAllTypes();
+        }
+
+        private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            API api = (API)GetApi();
+            api.registerCritterPack(typeof(StardewValley.BellsAndWhistles.Critter));
+            api.registerCritterPack(typeof(Critters.PackagedCritters.HornedOwl));
         }
 
         public void newDay(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
             BackgroundHandler.updateBackground();
-            ParticleSystem testSystem = new ParticleSystem(Game1.mouseCursors, new Microsoft.Xna.Framework.Rectangle(32, 0, 10, 10), new Microsoft.Xna.Framework.Vector2(24, 10), 4, 0.1f, 50, 2400, 
-                new Dictionary<int, float>
-                {
-                    {ParticleSystem.Out, 0 },
-                    {ParticleSystem.North, 12 },
-                    {ParticleSystem.East, 3 },
-                    {ParticleSystem.Up, 0 },
-                    {ParticleSystem.Right, 0 }
-                },
-                new Dictionary<int, float>
-                {
-                    {ParticleSystem.Out, 0 },
-                    {ParticleSystem.North, -9.8f },
-                    {ParticleSystem.East, 0 },
-                    {ParticleSystem.Up, 0 },
-                    {ParticleSystem.Right, 0 }
-                }
-            );
-            ParticleHandler.systems.Add(testSystem);
+            ForegroundHandler.updateForeground();
+            ParticleHandler.updateParticleSystems(Game1.currentLocation);
+            //ParticleSystem testSystem = new ParticleSystem("Content/Particles/Test_P");
+            //testSystem.tileLocation = new Microsoft.Xna.Framework.Vector2(24, 10);
+            //ParticleSystem testSystem = new ParticleSystem(Game1.mouseCursors, new Microsoft.Xna.Framework.Rectangle(32, 0, 10, 10), new Microsoft.Xna.Framework.Vector2(24, 10), 4, 0.1f, 5f, 1, 24000, 0, 0, -0.05f, 0.55f, 
+            //    new Dictionary<int, float>
+            //    {
+            //        {ParticleSystem.Out, 0 },
+            //        {ParticleSystem.North, -2 },
+            //        {ParticleSystem.East, -2 },
+            //        {ParticleSystem.Up, 0 },
+            //        {ParticleSystem.Right, 0 }
+            //    },
+            //    new Dictionary<int, float>
+            //    {
+            //        {ParticleSystem.Out, 0 },
+            //        {ParticleSystem.North, 10f },
+            //        {ParticleSystem.East, 10f },
+            //        {ParticleSystem.Up, 0 },
+            //        {ParticleSystem.Right, 0 }
+            //    }
+            //);
+            //ParticleHandler.systems.Add(testSystem);
         }
 
         public void drawExtraLayers(object sender, StardewModdingAPI.Events.RenderedWorldEventArgs e)
@@ -108,9 +133,11 @@ namespace MapUtilities
             {
                 Pseudo3D.MapHandler.drawOverlays(e.SpriteBatch, Game1.currentLocation);
             }
+            ForegroundHandler.draw(e.SpriteBatch);
             //e.SpriteBatch.End();
             //e.SpriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             //ParticleHandler.draw(e.SpriteBatch);
+            //Perspective.PerspectiveRenderer.draw(e.SpriteBatch);
         }
 
         public void performTenMinuteUpdate(object sender, StardewModdingAPI.Events.TimeChangedEventArgs e)
@@ -120,14 +147,27 @@ namespace MapUtilities
 
         public void performLocationSetup(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
         {
-            BackgroundHandler.updateBackground();
+            Contact.TileContactMorphHandler.cleanup();
+            BackgroundHandler.updateBackground(e.NewLocation);
+            ForegroundHandler.updateForeground();
+            ParticleHandler.updateParticleSystems(e.NewLocation);
             Time.TimeHandler.applyAllLayersToNow(e.NewLocation);
-            TreeHandler.createAllTrees(e.NewLocation);
+            Critters.CritterTileHandler.spawnCitters(e.NewLocation);
+            //TreeHandler.createAllTrees(e.NewLocation);
+            //Perspective.PerspectiveRenderer.makeMinimap(e.NewLocation);
         }
 
         public void performTickUpdate(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
         {
             ParticleHandler.update(Game1.currentGameTime, Game1.currentLocation);
+            Contact.PainTileHandler.tickUpdate();
+            Contact.TileContactMorphHandler.update();
+            ForegroundHandler.update();
+        }
+
+        public override object GetApi()
+        {
+            return new API();
         }
     }
 }

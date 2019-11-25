@@ -81,34 +81,34 @@ namespace MapUtilities.Pseudo3D
                     Tile tile1 = location.map.GetLayer(back).PickTile(new Location(position.Right, position.Top), viewport.Size);
                     if (tile1 != null)
                         tile1.TileIndexProperties.TryGetValue("Passable", out propertyValue);
-                    if (propertyValue != null && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Right, position.Top)))
+                    if (propertyValue != null && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Right, position.Top)))
                         return true;
                     Tile tile2 = location.map.GetLayer(back).PickTile(new Location(position.Right, position.Bottom), viewport.Size);
                     if (tile2 != null)
                         tile2.TileIndexProperties.TryGetValue("Passable", out propertyValue);
-                    if (propertyValue != null && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Right, position.Bottom)))
+                    if (propertyValue != null && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Right, position.Bottom)))
                         return true;
                     Tile tile3 = location.map.GetLayer(back).PickTile(new Location(position.Left, position.Top), viewport.Size);
                     if (tile3 != null)
                         tile3.TileIndexProperties.TryGetValue("Passable", out propertyValue);
-                    if (propertyValue != null && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Left, position.Top)))
+                    if (propertyValue != null && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Left, position.Top)))
                         return true;
                     Tile tile4 = location.map.GetLayer(back).PickTile(new Location(position.Left, position.Bottom), viewport.Size);
                     if (tile4 != null)
                         tile4.TileIndexProperties.TryGetValue("Passable", out propertyValue);
-                    if (propertyValue != null && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Left, position.Bottom)))
+                    if (propertyValue != null && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Left, position.Bottom)))
                         return true;
                     if (flag)
                     {
                         Tile tile5 = location.map.GetLayer(back).PickTile(new Location(position.Center.X, position.Bottom), viewport.Size);
                         if (tile5 != null)
                             tile5.TileIndexProperties.TryGetValue("Passable", out propertyValue);
-                        if (propertyValue != null && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Center.X, position.Bottom)))
+                        if (propertyValue != null && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Center.X, position.Bottom)))
                             return true;
                         Tile tile6 = location.map.GetLayer(back).PickTile(new Location(position.Center.X, position.Top), viewport.Size);
                         if (tile6 != null)
                             tile6.TileIndexProperties.TryGetValue("Passable", out propertyValue);
-                        if (propertyValue != null && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Center.X, position.Top)))
+                        if (propertyValue != null && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Center.X, position.Top)))
                             return true;
                     }
                 }
@@ -125,7 +125,7 @@ namespace MapUtilities.Pseudo3D
                             tile7.TileIndexProperties.TryGetValue("NPCPassable", out propertyValue);
                         if (propertyValue == null && !isFarmer && (character != null && character.canPassThroughActionTiles()))
                             tile7.Properties.TryGetValue("Action", out propertyValue);
-                        if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Right, position.Top)))
+                        if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Right, position.Top)))
                         {
                             //Logger.log("Tile " + tile7.Id.ToString() + " was solid.  (" + tile7.Layer.Id + ")");
                             if (character == null)
@@ -143,7 +143,7 @@ namespace MapUtilities.Pseudo3D
                             tile8.TileIndexProperties.TryGetValue("NPCPassable", out propertyValue);
                         if (propertyValue == null && !isFarmer && (character != null && character.canPassThroughActionTiles()))
                             tile8.Properties.TryGetValue("Action", out propertyValue);
-                        if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Right, position.Bottom)))
+                        if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Right, position.Bottom)))
                         {
                             //Logger.log("Tile " + tile8.Id.ToString() + " was solid.  (" + tile8.Layer.Id + ")");
                             if (character == null)
@@ -161,7 +161,7 @@ namespace MapUtilities.Pseudo3D
                             tile9.TileIndexProperties.TryGetValue("NPCPassable", out propertyValue);
                         if (propertyValue == null && !isFarmer && (character != null && character.canPassThroughActionTiles()))
                             tile9.Properties.TryGetValue("Action", out propertyValue);
-                        if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Left, position.Top)))
+                        if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Left, position.Top)))
                         {
                             //Logger.log("Tile " + tile9.Id.ToString() + " was solid.  (" + tile9.Layer.Id + ")");
                             if (character == null)
@@ -179,7 +179,7 @@ namespace MapUtilities.Pseudo3D
                             tile10.TileIndexProperties.TryGetValue("NPCPassable", out propertyValue);
                         if (propertyValue == null && !isFarmer && (character != null && character.canPassThroughActionTiles()))
                             tile10.Properties.TryGetValue("Action", out propertyValue);
-                        if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Left, position.Bottom)))
+                        if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Left, position.Bottom)))
                         {
                             //Logger.log("Tile " + tile10.Id.ToString() + " was solid.  (" + tile10.Layer.Id + ")");
                             if (character == null)
@@ -199,7 +199,7 @@ namespace MapUtilities.Pseudo3D
                                 tile5.TileIndexProperties.TryGetValue("NPCPassable", out propertyValue);
                             if (propertyValue == null && !isFarmer && (character != null && character.canPassThroughActionTiles()))
                                 tile5.Properties.TryGetValue("Action", out propertyValue);
-                            if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Center.X, position.Top)))
+                            if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Center.X, position.Top)))
                             {
                                 //Logger.log("Tile " + tile5.Id.ToString() + " was solid.  (" + tile5.Layer.Id + ")");
                                 if (character == null)
@@ -217,7 +217,7 @@ namespace MapUtilities.Pseudo3D
                                 tile6.TileIndexProperties.TryGetValue("NPCPassable", out propertyValue);
                             if (propertyValue == null && !isFarmer && (character != null && character.canPassThroughActionTiles()))
                                 tile6.Properties.TryGetValue("Action", out propertyValue);
-                            if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.temporaryImpassableTile.Contains(position.Center.X, position.Bottom)))
+                            if ((propertyValue == null || propertyValue.ToString().Length == 0) && (!isFarmer || !Game1.player.TemporaryPassableTiles.Contains(position.Center.X, position.Bottom)))
                             {
                                 //Logger.log("Tile " + tile6.Id.ToString() + " was solid.  (" + tile6.Layer.Id + ")");
                                 if (character == null)
